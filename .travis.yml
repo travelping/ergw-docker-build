@@ -3,9 +3,12 @@ sudo: required
 services:
   - docker
 
+env:
+  - BUILD_IMAGE="grundrausch3n/ergw-docker-base"
+
 script:
-  - docker build -t grundrausch3n/ergw-docker-build .
+  - docker build -t $BUILD_IMAGE .
 
 after_success:
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker push grundrausch3n/ergw-docker-build
+    docker push $BUILD_IMAGE
