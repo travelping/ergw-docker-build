@@ -4,7 +4,7 @@ services:
   - docker
 
 env:
-  - BUILD_IMAGE="grundrausch3n/ergw-docker-base"
+  - BUILD_IMAGE="grundrausch3n/ergw-docker-build"
 
 script:
   - docker build -t $BUILD_IMAGE .
