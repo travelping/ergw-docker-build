@@ -8,14 +8,19 @@ RUN apt-get update && apt-get -y install build-essential debhelper devscripts \
     git erlang-base-hipe erlang-dev erlang-tools \
     erlang-syntax-tools erlang-eunit \
     erlang-inets erlang-snmp erlang-diameter \
-    erlang-dialyzer erlang-ssl
+    erlang-dialyzer erlang-ssl equivs
 
 #
-# install rebar3
+# install rebar3 and create a fake debian package for it
 #
 RUN curl -L -O https://github.com/erlang/rebar3/releases/download/3.3.6/rebar3
 RUN chmod a+x rebar3
 RUN mv rebar3 /usr/bin
+RUN echo "PWD: $PWD"
+COPY rebar3-dummy .
+RUN equivs-build rebar3-dummy
+RUN dpkg -i rebar3-dummy_3.3.6_all.deb
+RUN rm -f rebar3*
 
 RUN mkdir /build
 WORKDIR /build
