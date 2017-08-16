@@ -6,7 +6,7 @@ RUN echo "deb http://ppa.launchpad.net/ergw/xenial/ubuntu xenial main" > /etc/ap
 
 RUN apt-get update && apt-get -y install build-essential debhelper devscripts \
     git erlang-base-hipe erlang-dev erlang-tools \
-    erlang-syntax-tools erlang-eunit \
+    erlang-syntax-tools erlang-eunit erlang-common-test \
     erlang-inets erlang-snmp erlang-diameter \
     erlang-dialyzer erlang-ssl erlang-os-mon \
     equivs
