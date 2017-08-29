@@ -3,7 +3,7 @@ Priority: optional
 Standards-Version: 3.9.7
 
 Package: rebar3-dummy
-Version: 3.3.6
+Version: 3.4.6
 Maintainer: Andreas Schultz <aschultz@warp10.net>
 Provides: rebar3
 Architecture: all
