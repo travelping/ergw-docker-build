@@ -1,29 +1,29 @@
 FROM ubuntu:xenial
 
-RUN apt-get update -qq && apt-get install -y -qq curl
+ARG ERLANG_VERSION=1:21.1.1+dfsg-2+ubuntu16.04~ppa0
+ARG REBAR_VERSION=3.7.5
+
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 58A14C3D
 RUN echo "deb http://ppa.launchpad.net/ergw/xenial/ubuntu xenial main" > /etc/apt/sources.list.d/ergw-xenial-ppa.list
 
-RUN apt-get update && apt-get -y install build-essential debhelper devscripts \
-    git erlang-base-hipe erlang-dev erlang-tools \
-    erlang-syntax-tools erlang-eunit erlang-common-test \
-    erlang-inets erlang-snmp erlang-diameter \
-    erlang-dialyzer erlang-ssl erlang-os-mon \
-    equivs
+RUN apt-get update && apt-get install -y \
+    curl apt-transport-https \
+    build-essential debhelper devscripts equivs gettext \
+    git erlang-base-hipe=$ERLANG_VERSION erlang-dev=$ERLANG_VERSION erlang-tools=$ERLANG_VERSION \
+    erlang-syntax-tools=$ERLANG_VERSION erlang-eunit=$ERLANG_VERSION erlang-common-test=$ERLANG_VERSION \
+    erlang-inets=$ERLANG_VERSION erlang-snmp=$ERLANG_VERSION erlang-diameter=$ERLANG_VERSION \
+    erlang-dialyzer=$ERLANG_VERSION erlang-ssl=$ERLANG_VERSION erlang-os-mon=$ERLANG_VERSION
 
-#
-# install rebar3 and create a fake debian package for it
-#
-RUN curl -L -O https://github.com/erlang/rebar3/releases/download/3.4.3/rebar3
-RUN chmod a+x rebar3
-RUN mv rebar3 /usr/bin
-RUN echo "PWD: $PWD"
-COPY rebar3-dummy .
-RUN equivs-build rebar3-dummy
-RUN dpkg -i rebar3-dummy_3.4.6_all.deb
-RUN rm -f rebar3*
+COPY rebar3-dummy.tpl .
+RUN ( \
+        cd /usr/bin && \
+        curl -L -O https://github.com/erlang/rebar3/releases/download/$REBAR_VERSION/rebar3 && \
+        chmod a+x rebar3 ) && \
+    envsubst < rebar3-dummy.tpl > rebar3-dummy && \
+    equivs-build rebar3-dummy && \
+    dpkg -i rebar3-dummy_${REBAR_VERSION}_all.deb && \
+    rm -f rebar3*
 
-RUN mkdir /build
 WORKDIR /build
 
 CMD ["bash"]
